@@ -11,22 +11,19 @@ from PIL import Image
 
 class NotebookAdminForm(ModelForm):
 
-    MIN_RESOLUTION = (400, 400)
-    MAX_RESOLUTION = (800, 800)
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['image'].help_text = mark_safe(
                 '<span style="color:white;font-size:14px;">Загружайте изображения с минимальным размером {}*{}</span>'.format(
-                *self.MIN_RESOLUTION
+                *Product.MIN_RESOLUTION
             )
         )
 
     def clean_image(self):
         image = self.clean_image['image']
         img = Image.open(image)
-        min_height, min_width = self.MIN_RESOLUTION
-        max_height, max_width = self.MAX_RESOLUTION
+        min_height, min_width = Product.MIN_RESOLUTION
+        max_height, max_width = Product.MAX_RESOLUTION
         if img.height < min_height or img.width < min_width:
             raise ValidationError('Разрешение иображения меньше минимального значения')
         if img.height > max_height or img.width > max_width:
