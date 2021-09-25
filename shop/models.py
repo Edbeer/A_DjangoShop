@@ -87,7 +87,7 @@ class Product(models.Model):
             raise MinResolutionErrorException('Разрешение иображения меньше минимального значения')
         if img.height > max_height or img.width > max_width:
             raise MaxResolutionErrorException('Разрешение иображения больше максимального значения')
-        return image
+        super().save(*args, **kwargs)
 
 
 class Notebook(Product):
