@@ -9,18 +9,14 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 User = get_user_model()
 
-'''
-Category
-Product
-CartProduct
-Cart
-Order
-Customer
-Specifications
-'''
+
+def get_product_url(obj, viewname):
+    ct_model = obj.__class__._meta.model_name
+    return reverse(viewname, kwargs={'ct_model': ct_model, 'slug': obj.slug})
 
 
 class MinResolutionErrorException(Exception):
@@ -118,6 +114,9 @@ class Notebook(Product):
     def __str__(self):
         return '{} : {}'.format(self.category.title, self.title)
 
+    def get_absolute_url(self):
+        return get_product_url(self, 'product_detail')
+
 
 class Smartphone(Product):
 
@@ -134,6 +133,8 @@ class Smartphone(Product):
     def __str__(self):
         return '{} : {}'.format(self.category.title, self.title)
 
+    def get_absolute_url(self):
+        return get_product_url(self, 'product_detail')
 
 
 class CartProduct(models.Model):
