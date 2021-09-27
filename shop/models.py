@@ -125,8 +125,10 @@ class Smartphone(Product):
     resolution = models.CharField(max_length=255, verbose_name='Разрешение экрана')
     accum_volume = models.CharField(max_length=255, verbose_name='Объем аккумулятора')
     ram = models.CharField(max_length=255, verbose_name='Оперативная память')
-    sd = models.BooleanField(default=True)
-    sd_volume_max = models.CharField(max_length=255, verbose_name='Максимальный объём встраиваимой памяти')
+    sd = models.BooleanField(default=True, verbose_name='Наличие сд карты')
+    sd_volume_max = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name='Максимальный объём встраиваимой памяти'
+    )
     main_cam_mp = models.CharField(max_length=255, verbose_name='Колличество мегапикселей основной камеры')
     frontal_cam_mp = models.CharField(max_length=255, verbose_name='Колличество мегапикселей фронтальной камеры')
 
@@ -148,7 +150,7 @@ class CartProduct(models.Model):
     final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Итоговая цена')
 
     def __str__(self):
-        return 'Продукт: {} (для корзины)'.format(self.product.title)
+        return 'Продукт: {} (для корзины)'.format(self.content_object.title)
 
 
 class Cart(models.Model):
@@ -156,7 +158,9 @@ class Cart(models.Model):
     owner = models.ForeignKey('Customer', verbose_name='Владелец', on_delete=models.CASCADE)
     products = models.ManyToManyField(CartProduct, blank=True, related_name='related_cart')
     total_products = models.PositiveIntegerField(default=0)
-    final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Итоговая цена')
+    final_price = models.DecimalField(default=0, max_digits=9, decimal_places=2, verbose_name='Итоговая цена')
+    in_order = models.BooleanField(default=False)
+    for_anonymous_user = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)
