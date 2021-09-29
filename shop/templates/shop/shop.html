@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% for product in products %}
 <div class="col mb-5">
-    {% for product in products %}
     <div class="card h-100">
         <!-- Product image-->
         <img class="card-img-top" src="{{ product.image.url }}" alt="..." />
@@ -10,17 +10,17 @@
         <div class="card-body p-4">
             <div class="text-center">
                 <!-- Product name-->
-                <h5 class="fw-bolder">Fancy Product</h5>
+                <h5 class="fw-bolder">{{ product.title }}</h5>
                 <!-- Product price-->
-                $40.00 - $80.00
+                {{ product.price }} руб.
             </div>
         </div>
         <!-- Product actions-->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ product.get_absolute_url }}">View options</a></div>
         </div>
     </div>
-    {% endfor %}
 </div>
+{% endfor %}
 
 {% endblock %}

@@ -33,8 +33,14 @@ class HomePage(View):
     
     def get(self, request):
         categories = Category.objects.get_categories_for_left_sidebar()
-        products = LatestProduct.objects.get_products_for_main_page()
-        return render(request, 'shop/shop.html', {'categories': categories, 'products': products})
+        products = LatestProduct.objects.get_products_for_main_page(
+            'notebook', 'smartphone', with_respect_to='notebook'
+        )
+        context = {
+            'categories': categories,
+            'products': products
+        }
+        return render(request, 'shop/shop.html', context)
 
 
 class CategoryDetailView(CategoryDetailMixin, DetailView):
