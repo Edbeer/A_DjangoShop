@@ -29,3 +29,12 @@ class ProductDetailView(DetailView):
 def shop(request):
     categories = Category.objects.get_categories_for_left_sidebar()
     return render(request, 'shop/shop.html', {'categories': categories})
+
+
+class CategoryDetailView(DetailView):
+
+    model = Category
+    queryset = Category.objects.all()
+    context_object_name = 'category'
+    template_name = 'shop/category_detail.html'
+    slug_url_kwarg = 'slug'
