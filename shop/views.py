@@ -1,10 +1,18 @@
 from django.shortcuts import render
-from django.views.generic import DetailView
+from django.views.generic import DetailView, View
 
-from .models import Notebook, Smartphone
+from .models import Notebook, Smartphone, Category, LatestProduct
+
+from .mixins import CategoryDetailMixin
 
 
-class ProductDetailView(DetailView):
+def test(request):
+    categories = Category.objects.get_categories_for_left_sidebar()
+    products = LatestProduct.objects.get_products_for_main_page()
+    return render(request, 'templates/base.html', {'categories': categories})
+
+
+class ProductDetailView(CategoryDetailMixin, DetailView):
 
     CT_MODEL_MODEL_CLASS = {
         'notebook': Notebook,
@@ -21,5 +29,24 @@ class ProductDetailView(DetailView):
     slug_url_kwarg = 'slug'
 
 
-def shop(request):
-    return render(request, 'shop/shop.html')
+class HomePage(View):
+    
+    def get(self, request):
+        categories = Category.objects.get_categories_for_left_sidebar()
+        products = LatestProduct.objects.get_products_for_main_page(
+            'notebook', 'smartphone', with_respect_to='notebook'
+        )
+        context = {
+            'categories': categories,
+            'products': products
+        }
+        return render(request, 'shop/shop.html', context)
+
+
+class CategoryDetailView(CategoryDetailMixin, DetailView):
+
+    model = Category
+    queryset = Category.objects.all()
+    context_object_name = 'category'
+    template_name = 'shop/category_detail.html'
+    slug_url_kwarg = 'slug'
